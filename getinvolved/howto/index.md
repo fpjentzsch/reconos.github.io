@@ -16,3 +16,7 @@ Getting involved with the development of ReconOS and/or applications using it is
    If you've identified an area for improvement (be it in the documentation or in the code), it's rather straightforward to add your improvements into the project. You can, of course, always fork the project (as long as you keep within the license(s)), but by far the preferred way is to submit your additions as a patch to the mainline ReconOS repository as a pull request. Before submitting code, be sure to have read and understood the applicable software licenses, and fill out a Contributor License Agreement) - this helps us to keep the codebase straight and clean of any licensing deviations. Again, you're most welcome to ask about and discuss changes within the [developer forum](/getinvolved/forum).
 
 Also, if you're interested in setting up a more involved collaboration, e.g. within a larger research project which you think could benefit from or add to ReconOS, please get in touch with us either through the [developer forum](/getinvolved/forum) or directly via e-mail.
+
+todo: add license infos
+
+todo: link forum here instead of iframe: https://groups.google.com/forum/#!forum/reconos

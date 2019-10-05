@@ -1,5 +1,5 @@
 ---
-title: Reconfigurable Hardware Slots
+title: Dynamic Reconfiguration
 layout: page
 ---
 

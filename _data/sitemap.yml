@@ -1,31 +1,29 @@
 /:
-  - [/about, About ReconOS, /about/objectives]
-  - [/gettingstarted, Getting Started, /gettingstarted/tutorial]
-  - [/documentation, Documentation, /documentation/userguide]
+  - [/about, About ReconOS, /about/overview]
+  - [/tutorials, Tutorials, /tutorials/gettingstarted]
+  - [/documentation, Documentation, /documentation/api_hw]
   - [/getinvolved, Get Involved, /getinvolved/howto]
-  - [/publications, Publications]
-
+  - [/github, Github Repository, "https://github.com/ReconOS/reconos", y]
+  
 /about:
-  - [/about/objectives, Objectives]
-  - [/about/guidelines, Development Guidelines]
+  - [/about/overview, What It Is]
+  - [/about/how_it_works, How It Works]
   - [/about/history, History]
-  - [/about/stories, Success Stories]
+  - [/about/projects, Projects & Publications]
 
-/gettingstarted:
-  - [/gettingstarted/tutorial, Tutorial]
-  - [/gettingstarted/dynamic_reconfiguration, Dynamic Reconfiguration]
-  - [/gettingstarted/demos, Demo Builds]
-#  - [/gettingstarted/samplecode, Sample Code]
-  - [/gettingstarted/github, Github Repository, "https://github.com/ReconOS/reconos", y]
-  - [/gettingstarted/resources, Resources]
-
+/tutorials:
+  - [/tutorials/gettingstarted, Getting Started]
+  - [/tutorials/project_build, Build a Project]
+  - [/tutorials/thread_creation, Create a Thread]
+  - [/tutorials/dynamic_reconfiguration, Dyn. Reconfiguration]
+  - [/tutorials/dynamic_clocking, Dyn. Clocking]
 
 /documentation:
-  - [/documentation/userguide, User Guide]
-  - [/documentation/api, API Documentation]
-  - [/documentation/architecture, Architecture]
-  - [/documentation/toolflow, Tool Flow]
+  - [/documentation/api_hw, Hardware API]
+  - [/documentation/api_sw, Software API]
+  - [/documentation/rdk, Development Kit (RDK)]
   
 /getinvolved:
   - [/getinvolved/howto, How to get Involved]
-  - [/getinvolved/forum, Developer Forum]
+  - [/getinvolved/github, Github Repository, "https://github.com/ReconOS/reconos", y]
+  - [/getinvolved/forum, Developer Forum, "https://groups.google.com/forum/#!forum/reconos", y]

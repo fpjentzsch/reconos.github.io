@@ -1,5 +1,5 @@
 ---
-title: ReconOS API
+title: Hardware API
 layout: page
 ---
 # ReconOS API

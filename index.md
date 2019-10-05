@@ -13,6 +13,8 @@ slider:
       Dynamically Reconfigurable Hardware Threads,
       ReconOS allows to dynamically reconfigure your hardware threads utilizing the partial reconfiguration features of the FPGA]
 ---
+> ---THIS IS A WIP DEVELOPMENT VERSION OF THE WEBSITE---
+>
 > "The ReconOS operating system for reconfigurable computing offers a unified
 > multithreaded programming model and OS services for threads executing in
 > software and threads mapped to reconfigurable hardware. By semantically

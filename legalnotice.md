@@ -1,23 +1,23 @@
 ---
-title: Imprint
+title: Legal Notice
 layout: page
 ---
-# Imprint
+# Legal Notice
 
 ## Overall responsibility
 
 This website is published by the University of Paderborn. The
 University of Paderborn is a statutory body and an institution
 of the State of North Rhine-Westphalia. The University is
-legally represented by its President, Prof. Dr. Wilhelm Schäfer,
+legally represented by its President, Prof. Dr. Birgitt Riegraf,
 who carries the overall responsibility for this website:
 
 *President of the University of Paderborn*  
-Prof. Dr. Wilhelm Schäfer  
+Prof. Dr. Birgitt Riegraf   
 University of Paderborn  
 Warburger Str. 100  
 33098 Paderborn, Germany  
-Phone: +49-5251-600 (central switchboard)
+Phone: +49-5251-60-0
 
 University of Paderborn's VAT No: DE 811209907
 

@@ -1,7 +1,9 @@
 ---
-title: User Guide
+title: Create your own HW/SW Thread
 layout: page
 ---
+
+todo: update
 # User Guide
 
 This guide should give you an introduction into the development of

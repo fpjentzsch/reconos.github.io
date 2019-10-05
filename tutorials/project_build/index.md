@@ -1,9 +1,10 @@
 ---
-title: Step By Step Guide for the Zynq
+title: Build a Project
 layout: page
 ---
 
 # install.sh : The Easy Start (Recommended)
+todo: remove/tuck away
 Starting with ReconOS v4, we offer an easy to use install script, which sets 
 up most of a ReconOS development environment for you. It should work under most Linux distributions. 
 All you have to do is download the shell script, make it executable and start it. The script will 

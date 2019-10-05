@@ -1,7 +1,9 @@
 ---
-title: Demo Builds
+title: Getting Started
 layout: page
 ---
+
+todo: rewrite/add demos/update
 # Demo Builds
 
 To get a first impression of ReconOS without fiddling around with
@@ -82,4 +84,17 @@ Or for the matrix multiplication demo run.
 
 ### Resources
 * Boot files &#91;[zedboard.tar.gz](zedboard.tar.gz)&#93;
+
+todo: integrate the old resources page:
+# Resources
+
+Here you can find several useful downloads, especially for beginners to simplify
+the first steps with ReconOS.
+
+## Root filesystem
+To use Linux you need a root filesystem to mount. You can either build
+your own filesystem by compiling busybox or download a prebuild one here.
+
+* ARM (e.g. Zynq) &#91;[rootfs_arm.tar.gz](rootfs_arm.tar.gz)&#93;
+* Microblaze (e.g. Virtex) &#91;[rootfs_microblaze.tar.gz](rootfs_microblaze.tar.gz)&#93;
 
