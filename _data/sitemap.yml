@@ -1,7 +1,7 @@
 /:
   - [/about, About ReconOS, /about/overview]
   - [/tutorials, Tutorials, /tutorials/gettingstarted]
-  - [/documentation, Documentation, /documentation/api_hw]
+  - [/documentation, Documentation, /documentation/api_thread_vhdl]
   - [/getinvolved, Get Involved, /getinvolved/howto]
   - [/github, Github Repository, "https://github.com/ReconOS/reconos", y]
   
@@ -19,8 +19,9 @@
   - [/tutorials/dynamic_clocking, Dyn. Clocking]
 
 /documentation:
-  - [/documentation/api_hw, Hardware API]
-  - [/documentation/api_sw, Software API]
+  - [/documentation/api_thread_vhdl, VHDL API (HWT)]
+  - [/documentation/api_thread_c, C API (HWT/SWT)]
+  - [/documentation/api_application_c, C API (Application)]
   - [/documentation/rdk, Development Kit (RDK)]
   
 /getinvolved:
