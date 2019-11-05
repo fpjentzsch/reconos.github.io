@@ -21,10 +21,10 @@
 /documentation:
   - [/documentation/api_thread_vhdl, VHDL API (HWT)]
   - [/documentation/api_thread_c, C API (HWT/SWT)]
-  - [/documentation/api_application_c, C API (Application)]
-  - [/documentation/rdk, Development Kit (RDK)]
+  - [/documentation/api_application_c, Main (C)]
+  - [/documentation/rdk, RDK]
   
 /getinvolved:
-  - [/getinvolved/howto, How to get Involved]
+  - [/getinvolved/howto, How to Get Involved]
   - [/getinvolved/github, Github Repository, "https://github.com/ReconOS/reconos", y]
   - [/getinvolved/forum, Developer Forum, "https://groups.google.com/forum/#!forum/reconos", y]

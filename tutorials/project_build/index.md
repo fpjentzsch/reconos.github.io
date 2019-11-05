@@ -2,25 +2,7 @@
 title: Build a Project
 layout: page
 ---
-
-# install.sh : The Easy Start (Recommended)
-todo: remove/tuck away
-Starting with ReconOS v4, we offer an easy to use install script, which sets 
-up most of a ReconOS development environment for you. It should work under most Linux distributions. 
-All you have to do is download the shell script, make it executable and start it. The script will 
-ask you for relevant information, check if required software tools are installed, 
-clone the required software repositories and setup some configuration variables. Caution: It 
-downloads approx. 2.5 GB during installation.
-
-To get started execute these commands:
-
-```
-> wget https://raw.githubusercontent.com/ReconOS/reconos/v4.0/tools/install.sh
-> chmod +x install.sh
-> ./install.sh
-```
-
-# Step By Step Guide for the Zynq (Alternative and Reference)
+# Step by Step Build-Guide for the Zedboard
 To get started using ReconOS, this guide leads you through the first steps to
 setup your development environment. You will build the sort demo and execute
 it on your board by following the step by step instructions given. The
@@ -48,17 +30,12 @@ We assume that you have basic knowledge of the development for
 an FPGA, especially for Systems on Chip, and that you have a working
 installation of the appropriate tools and your development board:
 
-* Linux workstation with a distribution of your choice (tested with Ubuntu 14.04), including
+* Linux workstation with a distribution of your choice (tested with Ubuntu 18.04), including
   * picocom
   * NFS server
   * Python 3.4 or greater
   
-* Xilinx ISE Design Tools (Version 14.7 for this guide)
-  including the following components and licenses
-  * Xilinx Platform Studio (XPS)
-  * ARM compiler collection
-  * Software Development Kit (SDK)
-  * Xilinx Microprocessor Debugger (XMD)
+* Xilinx Vivado & SDK (Version 2019.1 for this guide)
 
 * Evaluation board connected to your workstation
   (For this guide the Zedboard Rev. C or D)
@@ -73,8 +50,7 @@ Furthermore, we need to download some external components as listed below.
 
 * Busybox: [git://git.busybox.net/busybox](git://git.busybox.net/busybox)
 
-If you get into trouble with the master branch for the Xilinx repositories,
-you can try to checkout the branch `xilinx-v2016.2`.
+For the Xilinx repositories we recommend to checkout the matching tag for your Vivado version. In our case this is `xilinx-v2019.1`, which will build the Linux kernel version 4.19.
 
 ### Setup Working Directory
 
@@ -125,7 +101,7 @@ loading and booting the Linux kernel.
 While the boot ROM is already stored at the development board, the other
 executables involved in the boot process need to be provided by the developer.
 Especially, the FSBL contains device specific code and is, therefore, provided
-by Xilinx as proprietary software. However, recently, the U-Boot project
+by Xilinx as proprietary software. However, the U-Boot project
 developed an open source alternative called Secondary Program Loader (SPL).
 Although not officially supported by Xilinx, we will use the SPL in this
 tutorial, since it is integrated into the U-Boot build process and requires no
@@ -138,20 +114,16 @@ see our first command prompt via UART.
 
 Cross-compiling U-Boot and the Linux kernel require some environment variables
 to specify the target architecture and the appropriate cross compiler.
-Therefore, export the following variables:
+Therefore, export the following variables. You might need to adjust the cross compiler path depending on your SDK version.
 
 ```
 export WD=<<path to your working directory>>
 export ARCH=arm
-export CROSS_COMPILE=/opt/Xilinx/14.7/ISE_DS/EDK/gnu/arm/lin/bin/arm-xilinx-linux-gnueabi-
+export CROSS_COMPILE=/opt/Xilinx/SDK/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin/arm-linux-gnueabihf-
 export KDIR=$WD/linux-xlnx/
 export PATH=$WD/u-boot-xlnx/tools/:$PATH
 export PATH=$WD/linux-xlnx/scripts/dtc/:$PATH
 ```
-
-For the cross compiler you can also use a different one, for example the
-compilers shipped with the newer SDK versions under
-`/opt/Xilinx/SDK/xxxx.x/gnu/arm/lin/bin/arm-xilinx-linux-gnueabi-`.
 
 ### Compile Scripts
 
@@ -187,7 +159,7 @@ not need to use a ramdisk. To do so, apply the following patch.
 ```
 --- a/include/configs/zynq-common.h
 +++ b/include/configs/zynq-common.h
-@@ -259,8 +259,7 @@
+@@ -284,8 +284,7 @@
                         "echo Copying Linux from SD to RAM... && " \
                         "load mmc 0 ${kernel_load_address} ${kernel_image} && " \
                         "load mmc 0 ${devicetree_load_address} ${devicetree_image} && " \
@@ -195,8 +167,31 @@ not need to use a ramdisk. To do so, apply the following patch.
 -                       "bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}; " \
 +                       "bootm ${kernel_load_address} - ${devicetree_load_address}; " \
                 "fi\0" \
-        "usbboot=if usb start; then " \
+        "usbboot=run xilinxcmd && if usb start; then " \
                         "run uenvboot; " \
+```
+
+We should also change the default boot order in this file.
+```
+--- a/include/configs/zynq-common.h
++++ b/include/configs/zynq-common.h
+@@ -206,14 +206,14 @@
+        "nor "
+
+ #define BOOT_TARGET_DEVICES(func) \
++       func(XILINX, xilinx, na) \
+        BOOT_TARGET_DEVICES_MMC(func) \
+        BOOT_TARGET_DEVICES_QSPI(func) \
+        BOOT_TARGET_DEVICES_NAND(func) \
+        BOOT_TARGET_DEVICES_NOR(func) \
+        BOOT_TARGET_DEVICES_USB(func) \
+        BOOT_TARGET_DEVICES_PXE(func) \
+-       BOOT_TARGET_DEVICES_DHCP(func) \
+-       func(XILINX, xilinx, na)
++       BOOT_TARGET_DEVICES_DHCP(func)
+
+ #include <config_distro_bootcmd.h>
+ #endif /* CONFIG_SPL_BUILD */
 ```
 
 Finally, to configure and build U-Boot, execute the following commands.
@@ -211,7 +206,7 @@ Finally, to configure and build U-Boot, execute the following commands.
 ### Compile Linux Kernel
 
 After we have compiled U-Boot, we can proceed with Linux. You will see, that
-cross-compiling your own kernel is easier than you might thought, since we will
+cross-compiling your own kernel is easier than you might think, since we will
 just use the default configuration. If you wish, you can adjust the
 configuration to your needs before compilation.
 
@@ -231,20 +226,15 @@ These components include the correct addresses and used interrupt handlers.
 ```
 --- a/arch/arm/boot/dts/zynq-zed.dts
 +++ b/arch/arm/boot/dts/zynq-zed.dts
-@@ -31,7 +31,7 @@
+@@ -23,10 +23,31 @@
         };
- 
+
         chosen {
 -               bootargs = "";
 +               bootargs = "console=ttyPS0,115200 root=/dev/nfs rw nfsroot=<<hostip>>:<<path>>,tcp,nfsvers=3 ip=<<boardip>>:::255.255.255.0:reconos:eth0:off earlyprintk";
                 stdout-path = "serial0:115200n8";
         };
- 
-@@ -42,6 +42,27 @@
-                view-port = <0x0170>;
-                drv-vbus;
-        };
-+
+
 +       amba: amba {
 +               reconos_osif: reconos_osif@75a00000 {
 +                       compatible = "upb,reconos-osif-3.1";
@@ -265,19 +255,11 @@ These components include the correct addresses and used interrupt handlers.
 +                       interrupts = <0 59 4>;
 +               };
 +       };
- };
- 
- &clkc {
++
+        usb_phy0: phy0@e0002000 {
+                compatible = "ulpi-phy";
+                #phy-cells = <0>;
 ```
-
-> Note, that driver implementation in the current `develop` branch is just a
-> quick fix for the recent changes in the Linux kernel. In the `develop_ic`
-> there is a new driver in development, which uses the correct mechanisms to
-> automatically load the correct drivers based on the device tree
-> configuration. For this one, the `reconos_osif_intc` node can be removed and
-> its interrupt line needs to be added to the `reconos_osif` node. However,
-> the new driver is not completely implemented and also needs some changes in
-> the hardware cores.
 
 Now you can compile Linux by the following make command. This might take a
 while, so grab a coffee and cross your fingers.
@@ -293,7 +275,9 @@ while, so grab a coffee and cross your fingers.
 To run Linux, we also need a root filesystem to mount. In this section we
 will build a minimal root filesystem by compiling busybox. If you
 do not want to build the root filesystem by your own, just download
-it from the ReconOS homepage and extract it to $WD/nfs.
+it from here and extract it to $WD/nfs.
+
+* Exemplary ARM root filesystem &#91;[rootfs_arm.tar.gz](rootfs_arm.tar.gz)&#93;
 
 To create a minimal busybox setup, create a minimal config and enable all
 features you like. After that, compile busybox and copy the generated files to
@@ -312,7 +296,7 @@ the root filesystem.
 Besides busybox you must create some additional files and folders:
 
 ```
-> mkdir dev etc etc/init.d lib mnt opt opt/reconos proc root sys tmp
+> mkdir dev etc etc/init.d lib lib/firmware mnt opt opt/reconos proc root sys tmp 
 
 > cat > $WD/nfs/etc/inittab <<'EOF'
 ::sysinit:/etc/init.d/rcS
@@ -389,23 +373,20 @@ start the development kit.
 > source $WD/reconos/tools/settings.sh
 ```
 
-Since version 4.0 ReconOS supports exporting and building ReconOS projects with
-Xilinx ISE (XPS) and Vivado. To tell RDK what tool flow to use, edit the `[General]`
-section of the configuration file at `$WD/reconos/demos/sort_demo/build.cfg`.
+To tell RDK what which Vivado version it should use and where it can be found, edit the `[General]` section of the configuration file at `$WD/reconos/demos/sort_demo/build.cfg`.
 
 ```
-TargetXil = xps,14.7        # For use with Xilinx ISE (XPS)
-TargetXil = vivado,2016.2   # For use with Vivado
+TargetXil = vivado,2019.1
+XilinxPath = /opt/Xilinx
 ```
 
 So let's take a look into the SortDemo project folder in
 `$WD/reconos/demos/sort_demo`. It consists out of a source folder and a
 project file describing the structure of the application. Out of these
-sources, the RDK generates a complete EDK project for the hardware design and
+sources, the RDK generates a complete Vivado project for the hardware design and
 a ready to compile software project. To generate these two projects, simply
 start the RDK and execute `export_hw` and `export_sw`. To get more information
-for each command, you can execute it with the `--help` option and double tab
-reveals a list of all available commands.
+for each command, you can execute it with the `--help` option or view the [documentation](/documentation/rdk).
 
 ```
 > cd $WD/reconos/demos/sort_demo
@@ -416,12 +397,12 @@ reveals a list of all available commands.
 Now, the RDK has created two new folders, `build.hw` and `build.sw`, which
 contain the projects for hardware and software, respectively. To build both of
 them, we again need to setup some environment variable and compile an
-additional library. Again, the `CROSS_COMPILER` environment variable specifies
+additional library. Again, the `CROSS_COMPILE` environment variable specifies
 the compiler for the ARM processor used for the software compilation. The time
 library is used by the SortDemo to get precise benchmarking results.
 
 ```
-> export CROSS_COMPILE=/opt/Xilinx/SDK/2016.2/gnu/arm/lin/bin/arm-xilinx-linux-gnueabi-
+> export CROSS_COMPILE=/opt/Xilinx/SDK/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin/arm-linux-gnueabihf-
 > make -C $WD/reconos/linux/tools/timer
 ```
 
@@ -437,11 +418,13 @@ get a coffee.
 
 ### Running the Demo
 
-Now you have everything you need to run the SortDemo on real hardware. At
-first, copy the compiled software executable to the root filesystem.
+Now you have everything you need to run the SortDemo on real hardware. Copy the software executable and implemented bitstream to the root filesystem.
+
+Unfortunately, the FPGA manager included in newer Linux kernel versions does not support Vivado's .bin bitstream format directly, so you have to byte-flip the file using the xxd tool before moving it to the required directory.
 
 ```
 > cp $WD/reconos/demos/sort_demo/build.sw/sortdemo $WD/nfs/opt/reconos
+> xxd -e $WD/reconos/demos/sort_demo/build.hw/myReconOS.runs/impl_1/design_1_wrapper.bin | xxd -r > $WD/nfs/lib/firmware/bitstream_sortdemo.bin
 ```
 
 Then setup the SD card shipped with the board. The only thing you have to
@@ -454,19 +437,6 @@ do, is to cleanup the card and copy the right files to it.
 > cp $WD/linux-xlnx/arch/arm/boot/dts/zynq-zed.dtb /mnt/devicetree.dtb
 ```
 
-Also copy the implemented bitstream to SD card, for `TargetXil = xps,14.7`
-
-```
-> cp $WD/reconos/demos/sort_demo/build.hw/implementation/system.bin /mnt/fpga.bin
-```
-
-... or for `TargetXil = vivado,2016.2`
-
-```
-> cp $WD/reconos/demos/sort_demo/build.hw/myReconOS.runs/impl_1/design_1_wrapper.bit /mnt/
-
-```
-
 After that, insert the SD card into the Zedboard and configure the bootmode by
 setting jumpers MI02, MI03 and MI06 to GND and MI04 and MI05 to 3V3. Turn on
 the board, connect via UART and see how Linux boots. When the u-boot command prompt
@@ -477,12 +447,12 @@ Zynq> boot
 ```
 
 After Linux has booted, you can run the SortDemo.
-
 ```
 / # cd /opt/reconos
+/opt/reconos # echo bitstream_sortdemo.bit > /sys/class/fpga_manager/fpga0/firmware
 /opt/reconos # ./reconos_init.sh
 /opt/reconos # ./sortdemo
-/opt/reconos # ./sortdemo 2 1 16
+/opt/reconos # ./sortdemo 2 1 32
 ```
 
 ### Optional: Mount filesystem from ramdisk image instead of NFS share
@@ -493,11 +463,11 @@ all times in order to work. A different approach is to package the root filesyst
 in a ramdisk image and mount that image from SD card. This section describes, how to
 create and edit this image and how to setup U-Boot in order to start Linux with this approach.
 
-First create an empty image file and mount it.
+First create an empty image file and mount it. You might want to increase the size (`count`) depending on your use case.
 
 ```
 cd $WD/ramdisk
-dd if=/dev/zero of=ramdisk.image bs=1024 count=8192
+dd if=/dev/zero of=ramdisk.image bs=1024 count=16384
 mke2fs -F ramdisk.image -L "ramdisk" -b 1024 -m 0
 tune2fs ramdisk.image -i 0
 chmod a+rwx ramdisk.image
@@ -509,11 +479,22 @@ Then copy busybox, init files, ReconOS kernel modules and create the image file 
 format.
 
 ```
-sudo cp $WD/nfs/* $WD/ramdisk/mnt/
+sudo cp -r $WD/nfs/* $WD/ramdisk/mnt/
 sudo umount $WD/ramdisk/mnt/
 gzip $WD/ramdisk/ramdisk.image
 mkimage -A arm -T ramdisk -C gzip -d $WD/ramdisk/ramdisk.image.gz $WD/ramdisk/uramdisk.image.gz
 ```
 
-Revert the patch for zynq-common.h and compile U-Boot again. Copy u-boot.img, boot.bin and ramdisk.image.gz
-to SD card. Now the Zedboard starts without relying on an Ethernet connection to a host PC.
+Revert the 1st patch for zynq-common.h and compile U-Boot again.
+
+You also need to adjust the bootargs setting in the devicetree (zynq-zed.dts) and recompile it.
+```
+bootargs = "console=ttyPS0,115200 root=/dev/ram rw earlyprintk";
+```
+
+Copy the updated devicetree.dtb, u-boot.img, boot.bin and uramdisk.image.gz
+to SD card. Now the Zedboard starts without relying on an Ethernet connection to a host PC. If you want you can mount the SD card itself and retrieve or store data this way:
+
+```
+/ # mount /dev/mmcblk0p1 /mnt
+```

@@ -2,13 +2,11 @@
 title: How it works
 layout: page
 ---
+# How Does It work?
 
-# How does it work?
-
-todo: incorporate architecture page:
 # Architecture of ReconOS
 
-"The ReconOS run-time system architecture provides the structural foundation to support the multi-threading programming model and its execution on CPU/FPGA platforms. A typical ReconOS system that is decomposed into application software, OS kernel and hardware architecture. The application's software threads are usually executed on the **main CPU** alongside the host OS kernel that encapsulates APIs, libraries, and all programming model objects as well as lower level functions such as memory management and device drivers. The ReconOS run-time environment consists of hardware components that provide interfaces, communication channels, and other functionality such as memory access and address translation to the hardware threads. Additionally, the runtime system comprises software components in the form of libraries and kernel modules that offer an interface to the hardware, the operating system, and the application's software threads.
+The ReconOS run-time system architecture provides the structural foundation to support the multi-threading programming model and its execution on CPU/FPGA platforms. A typical ReconOS system that is decomposed into application software, OS kernel and hardware architecture. The application's software threads are usually executed on the **main CPU** alongside the host OS kernel that encapsulates APIs, libraries, and all programming model objects as well as lower level functions such as memory management and device drivers. The ReconOS run-time environment consists of hardware components that provide interfaces, communication channels, and other functionality such as memory access and address translation to the hardware threads. Additionally, the runtime system comprises software components in the form of libraries and kernel modules that offer an interface to the hardware, the operating system, and the application's software threads.
 
 A key component for multi-threading across the hardware/software boundary is the **delegate thread**, which is a light-weight software thread that interfaces between the hardware thread and the operating system. When a hardware thread needs to execute an operating system function, it relays this request through the **operating system interface** (OSIF) to the delegate thread using platform-specific (but application-independent) communication interfaces. The delegate thread then executes the desired operating system functions on behalf of its associated hardware thread. Hence, from the OS kernel's point of view, only software threads exist and interact, while the hardware threads are completely hidden behind their respective delegate threads. While the delegate mechanism causes a certain overhead for executing OS calls, the resulting simplicity of switching thread implementations between software and hardware greatly facilitates system generation and design space exploration.
 
@@ -16,22 +14,23 @@ A key component for multi-threading across the hardware/software boundary is the
 
 The figure above shows an instance of a ReconOS hardware architecture with a CPU, two reconfigurable slots, the memory subsystem and various peripherals. Hardware threads reside in **reconfigurable slots**, which are predefined areas of reconfigurable logic equipped with the necessary communication interfaces. Besides communicating with the OS kernel on the host CPU, hardware threads can also access the system memory. To that end, a hardware thread uses its **memory interface** (MEMIF) to connect to the ReconOS memory subsystem. The memory subsystem arbitrates and aligns the hardware threads' memory requests and can handle single word as well as burst accesses. To support Linux with virtual addressing as host operating system, ReconOS implements a **full-featured memory management unit** (MMU), including a translation lookaside buffer, that can autonomously translate addresses using the Linux kernel's page tables.
 
-Hardware threads use FIFOs to communicate with the memory subsystem; one outgoing and one incoming FIFO per hardware thread. Requests for memory transactions are encoded and written to the outgoing FIFO followed by data in the case of a write request. In the case of a read request, data become available on the incoming FIFO upon completion of the memory transfer. Similar to the communication with the OS, we provide a **library of VHDL procedures** to conveniently handle memory operations. These procedures encode the requests, synchronize with the memory FIFOs, and automatically transfer data from/to local memory elements within the hardware thread."
+Hardware threads use FIFOs to communicate with the memory subsystem; one outgoing and one incoming FIFO per hardware thread. Requests for memory transactions are encoded and written to the outgoing FIFO followed by data in the case of a write request. In the case of a read request, data become available on the incoming FIFO upon completion of the memory transfer. Similar to the communication with the OS, we provide a **library of VHDL procedures** to conveniently handle memory operations. These procedures encode the requests, synchronize with the memory FIFOs, and automatically transfer data from/to local memory elements within the hardware thread.
 
-<cite>ReconOS – an operating system approach for reconfigurable computing</cite>
-
-todo: incorporate toolflow page:
 # ReconOS Tool Flow
 
-"The required sources comprise the software threads, the hardware threads and the specification of the ReconOS hardware architecture. 
-We code software threads in **C** and hardware threads in **VHDL**, using the ReconOS-provided VHDL libraries for OS communication and memory access.
+The required sources comprise the software threads, the hardware threads and the specification of the ReconOS hardware architecture. 
+We code software threads in **C** and hardware threads in **VHDL** or **C++ with HLS**, using the ReconOS-provided libraries for OS communication and memory access.
 
 ![The ReconOS Toolflow]({{ site.url }}/assets/images/toolflow.svg)
 
 ReconOS extends the process for building a reconfigurable system-on-chip using standard **vendor tools**. On the software side, the delegate threads and **device drivers** for transparent communication with hardware threads are linked into the application executable and kernel image, respectively. On the hardware side, components such as the OS and memory interfaces as well as support logic for hardware threads are integrated into the tool flow.
 
-The **ReconOS System Builder** assembles the base system design and the hardware threads into a reference design and automatically connects bus interfaces, interrupts, and I/O. The build process then creates an FPGA configuration bitstream for the reference design using conventional synthesis and implementation tools.
+The **ReconOS Development Kit** assembles the base system design and the hardware threads into a reference design and automatically connects bus interfaces, interrupts, and I/O. The build process then creates an FPGA configuration bitstream for the reference design using conventional synthesis and implementation tools. **High-level synthesis** for hardware threads is integrated to streamline the design process.
 
-During design space exploration, the developer will create both hardware and software implementations for some of the threads. Switching between these implementations is a matter of replacing a single thread instantiation statement,  e.g., using **rthread_create()** instead of **pthread_create()**. Such a decision for software or hardware can even be taken during runtime."
+During design space exploration, the developer will create both hardware and software implementations for some of the threads. Switching between these implementations is a matter of replacing a single thread instantiation statement,  e.g., using **reconos_thread_create_hwt()** instead of **reconos_thread_create_swt()**. Such a decision for software or hardware can even be taken during runtime.
 
-<cite>ReconOS – an operating system approach for reconfigurable computing</cite>
+# Dynamic Partial Reconfiguration 
+
+ReconOS defines a standardized interface for hardware threads, which simplifies exchanging them, not only at design time but also during runtime using dynamic partial reconfiguration (DPR). DPR allows for exploiting FPGA resources in unconventional ways, for example, by loading hardware threads on demand, moving functionality between software and hardware, or even multi-tasking hardware slots by time-multiplexing.
+
+ReconOS supports DPR by dividing the architecture in a static and a dynamic part. The static part contains the processor, the memory subsystem, OSIFs, MEMIFs, and peripherals. The dynamic part is reserved for hardware threads, which can be reconfigured into the hardware slots.  Our DPR tool flow builds on Xilinx Vivado and creates the static subsystem and the partial bitstreams for each desired hardware thread/slot combination. Time-multiplexing of hardware slots is supported through cooperative multi-tasking.
