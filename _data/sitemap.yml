@@ -3,7 +3,7 @@
   - [/tutorials, Tutorials, /tutorials/gettingstarted]
   - [/documentation, Documentation, /documentation/api_thread_vhdl]
   - [/getinvolved, Get Involved, /getinvolved/howto]
-  - [/github, Github Repository, "https://github.com/ReconOS/reconos", y]
+  - [/github, <span class="external_link">Github Repository</span>, "https://github.com/ReconOS/reconos", y]
   
 /about:
   - [/about/overview, What It Is]
@@ -26,5 +26,5 @@
   
 /getinvolved:
   - [/getinvolved/howto, How to Get Involved]
-  - [/getinvolved/github, Github Repository, "https://github.com/ReconOS/reconos", y]
-  - [/getinvolved/forum, Developer Forum, "https://groups.google.com/forum/#!forum/reconos", y]
+  - [/getinvolved/github, <span class="external_link">Github Repository</span>, "https://github.com/ReconOS/reconos", y]
+  - [/getinvolved/forum, <span class="external_link">Developer Forum</span>, "https://groups.google.com/forum/#!forum/reconos", y]

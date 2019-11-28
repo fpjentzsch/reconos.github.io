@@ -244,7 +244,7 @@ These components include the correct addresses and used interrupt handlers.
 +               reconos_osif_intc: reconos_osif_intc@7b400000 {
 +                       compatible = "upb,reconos-osif-intc-3.1";
 +                       reg = <0x7b400000 0x10000>;
-+                       interrup-parent = <&intc>;
++                       interrupt-parent = <&intc>;
 +                       interrupts = <0 58 4>;
 +               };
 +

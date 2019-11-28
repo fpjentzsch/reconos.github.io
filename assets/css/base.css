@@ -70,6 +70,12 @@ a:hover {
 	color:#823c3c;
 }
 
+/* Draw external link symbol explicitly using: <span class="external_link"> */
+.external_link:after {
+content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+margin: 0 3px 0 5px;
+}
+
 p a {
 	font-family:"Roboto Condensed", Arial, sans-serif;
 	color:#787878;
