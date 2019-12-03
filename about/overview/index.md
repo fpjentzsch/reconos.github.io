@@ -13,3 +13,5 @@ ReconOS leverages the well-established multi-threading programming model and ext
 * The portability of applications between different reconfigurable computing systems is improved by using defined operating system interfaces for communication and synchronization instead of low-level platform-specific interfaces.
  
 * The unified appearance of hard and software threads from the application's perspective allows for moving functions between software and hardware during runtime, which supports the design of adaptive computing systems that exploit partial reconfiguration.
+
+To learn more about architecture and toolflow, visit the [how-it-works](/about/how_it_works/) page or get started right away with our [tutorials](/tutorials/gettingstarted/).

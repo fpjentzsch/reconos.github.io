@@ -19,10 +19,11 @@
   - [/tutorials/dynamic_clocking, Dyn. Clocking]
 
 /documentation:
-  - [/documentation/api_thread_vhdl, VHDL API (HWT)]
-  - [/documentation/api_thread_c, C API (HWT/SWT)]
-  - [/documentation/api_application_c, Main (C)]
-  - [/documentation/rdk, RDK]
+  - [/documentation/api_thread_vhdl, HWT&#58 VHDL]
+  - [/documentation/api_thread_c_hw, HWT&#58 C (HLS)]
+  - [/documentation/api_thread_c_sw, SWT&#58 C]
+  - [/documentation/api_application_c, Application&#58 C]
+  - [/documentation/rdk, Dev Kit (RDK)]
   
 /getinvolved:
   - [/getinvolved/howto, How to Get Involved]

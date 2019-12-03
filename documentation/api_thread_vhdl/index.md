@@ -1,8 +1,8 @@
 ---
-title: Thread VHDL API
+title: Hardware Thread VHDL API
 layout: page
 ---
-# Thread VHDL API
+# Hardware Thread VHDL API
 ReconOS provides two VHDL packages to design your hardware thread at register-transfer level. You include them like this:
 ``` vhdl
 library reconos_v3_01_a;
@@ -15,7 +15,8 @@ The main ReconOS package defines all common procedures for communicating via OSI
 <RESOURCE_GROUP_NAME>_<RESOURCE_NAME>
 ```
 
-## VHDL Procedures for HWTs
+## VHDL Procedures for Hardware Threads
+## Overview
 
 | **Setup**  | **OSIF**  |        |       | **MEMIF** |
 |------------|-----------|--------|-------|-----------|
@@ -25,6 +26,8 @@ The main ReconOS package defines all common procedures for communicating via OSI
 | [memif_reset](#memif_reset) | [osif_sem_wait](#osif_sem_wait)                  | [osif_cond_wait](#osif_cond_wait)           | [osif_mbox_tryget](#osif_mbox_tryget)| [memif_read_word](#memif_read_word)          |
 | [ram_setup](#ram_setup)     |      [osif_read](#osif_read)     | [osif_cond_signal](#osif_cond_signal)       | |
 | [ram_reset](#ram_reset)     |     [osif_write](#osif_write)      | [osif_cond_broadcast](#osif_cond_broadcast) | |
+
+---
 
 ### <a name="osif_setup"></a>osif&#95;setup
 #### Description

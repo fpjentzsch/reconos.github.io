@@ -25,7 +25,7 @@ We code software threads in **C** and hardware threads in **VHDL** or **C++ with
 
 ReconOS extends the process for building a reconfigurable system-on-chip using standard **vendor tools**. On the software side, the delegate threads and **device drivers** for transparent communication with hardware threads are linked into the application executable and kernel image, respectively. On the hardware side, components such as the OS and memory interfaces as well as support logic for hardware threads are integrated into the tool flow.
 
-The **ReconOS Development Kit** assembles the base system design and the hardware threads into a reference design and automatically connects bus interfaces, interrupts, and I/O. The build process then creates an FPGA configuration bitstream for the reference design using conventional synthesis and implementation tools. **High-level synthesis** for hardware threads is integrated to streamline the design process.
+The **ReconOS System Builder** assembles the base system design and the hardware threads into a reference design and automatically connects bus interfaces, interrupts, and I/O. The build process then creates an FPGA configuration bitstream for the reference design using conventional synthesis and implementation tools. **High-level synthesis** for hardware threads is integrated to streamline the design process.
 
 During design space exploration, the developer will create both hardware and software implementations for some of the threads. Switching between these implementations is a matter of replacing a single thread instantiation statement,  e.g., using **reconos_thread_create_hwt()** instead of **reconos_thread_create_swt()**. Such a decision for software or hardware can even be taken during runtime.
 

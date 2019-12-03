@@ -119,7 +119,7 @@ Therefore, export the following variables. You might need to adjust the cross co
 ```
 export WD=<<path to your working directory>>
 export ARCH=arm
-export CROSS_COMPILE=/opt/Xilinx/SDK/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin/arm-linux-gnueabihf-
+export CROSS_COMPILE=/tools/Xilinx/SDK/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin/arm-linux-gnueabihf-
 export KDIR=$WD/linux-xlnx/
 export PATH=$WD/u-boot-xlnx/tools/:$PATH
 export PATH=$WD/linux-xlnx/scripts/dtc/:$PATH
@@ -377,7 +377,7 @@ To tell RDK what which Vivado version it should use and where it can be found, e
 
 ```
 TargetXil = vivado,2019.1
-XilinxPath = /opt/Xilinx
+XilinxPath = /tools/Xilinx
 ```
 
 So let's take a look into the SortDemo project folder in
@@ -402,7 +402,7 @@ the compiler for the ARM processor used for the software compilation. The time
 library is used by the SortDemo to get precise benchmarking results.
 
 ```
-> export CROSS_COMPILE=/opt/Xilinx/SDK/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin/arm-linux-gnueabihf-
+> export CROSS_COMPILE=/tools/Xilinx/SDK/2019.1/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin/arm-linux-gnueabihf-
 > make -C $WD/reconos/linux/tools/timer
 ```
 

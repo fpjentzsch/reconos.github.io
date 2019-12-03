@@ -1,8 +1,8 @@
 ---
-title: Thread C API
+title: Hardware Thread C (HLS) API
 layout: page
 ---
-# Thread C API
+# Hardware Thread C (HLS) API
 As an alternative to the VHDL API, it is possible to design hardware threads entirely in C/C++ with HLS. ReconOS offers a set of C macros to communicate via OSIF and MEMIF. These are not only available for hardware-, but also for software threads. This allows you to design a ReconOS thread once and use the same sourcecode for a software and a hardware implementation.
 
 As with the VHDL API, you need to include the common ReconOS header as well as a thread-specific one:
@@ -13,7 +13,8 @@ As with the VHDL API, you need to include the common ReconOS header as well as a
 This provides you with resource index constants and a macro to define the entry point of your thread. The sort demo within the ReconOS repository contains an HLS-defined hardware thread and serves as a simple example on how to use it.
 
 
-## C Macros for HLS HWTs or SWTs
+## C Macros for HLS Hardware Threads
+## Overview
 
 | **Setup**  | **OSIF**  |        |       | **MEMIF** |
 |------------|-----------|--------|-------|-----------|
@@ -24,6 +25,7 @@ This provides you with resource index constants and a macro to define the entry 
 |     |            | [COND_SIGNAL](#COND_SIGNAL)       | |
 |      |            | [COND_BROADCAST](#COND_BROADCAST) | |
 
+---
 
 ### <a name="RAM"></a>RAM(type, size, name)
 #### Description

@@ -43,13 +43,18 @@ ReconOS has been developed in the context of several academic research projects 
 
 ## Refereed Conference Papers
 
+* Tobias Wiersema, Arne Bockhorn, Marco Platzner.
+  **Embedding FPGA Overlays into Configurable Systems-on-Chip: ReconOS meets ZUMA.**
+  In *Proc. Int. Conf. on Reconfigurable Computing and FPGAs (ReConFig)*, 2014.
+  &#91;[PDF](wiersema14_reconfig.pdf)&#93;
+
 * Markus Happe, Friedhelm Meyer auf der Heide, Peter Kling, Marco Platzner and Christian Plessl.
   **On-The-Fly Computing: A Novel Paradigm for Individualized IT Services (Invited Paper).**
   In *Proc. of the Int. Workshop on Software Technologies for Future Embedded and Ubiquitous Systems (SEUS)*, IEEE, June 2013.
   &#91;[PDF](happe13_seus.pdf)&#93;
 
-*  Ariane Keller, Daniel Borkmann and Stephan Neuhaus 
-  **Hardware Support for Dynamic Protocol Stacks**
+*  Ariane Keller, Daniel Borkmann and Stephan Neuhaus.
+  **Hardware Support for Dynamic Protocol Stacks.**
   In *Proc. of the Symposium on Architectures for Networking and Communications Systems*, ACM/IEEE , October 2012.
   &#91;[PDF](keller12_ancs.pdf)&#93;
 
