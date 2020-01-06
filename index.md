@@ -5,15 +5,15 @@ layout: main
 slider:
   - [ slider_zynq.jpg,
       Support for the Xilinx Zynq,
-      ReconOS now officially supports the Xilinx Zynq Platform]
+      ReconOS supports the Xilinx Zynq Platform and Vivado Toolflow]
   - [ slider_version.jpg,
-      ReconOS v4.0 released,
-      ReconOS now supports the Xilinx Vivado Toolflow and flexible clocking of hardware threads]
+      ReconOS v4.0 Released,
+      Now with updated website and documentation]
   - [ slider_reconf.jpg,
       Dynamically Reconfigurable Hardware Threads,
       ReconOS allows to dynamically reconfigure your hardware threads utilizing the partial reconfiguration features of the FPGA]
 ---
-> ---THIS IS A WIP DEVELOPMENT VERSION OF THE WEBSITE---
+> **---THIS IS A WIP DEVELOPMENT VERSION OF THE WEBSITE---**
 >
 > The ReconOS operating system for reconfigurable computing offers a unified
 > multithreaded programming model and OS services for threads executing in
