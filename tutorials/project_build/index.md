@@ -148,58 +148,19 @@ The SPL is also capable of booting Linux directly but requires non-volatile
 memory to store the kernel parameters. Since we do not want to setup this, we
 will execute a full blown U-Boot instance, loading the kernel image and device
 tree from SD-Card. Therefore, we need to disable the direct boot feature in
-the configuration. In the latest U-Boot versions this option is now available
+the configuration. This option is available
 via the KConfig in `SPL / TPL -> Activate Falcon Mode`. You can choose the
 preferred way of disabling this option, e.g. by editing the `.config` directly
 or using `make menuconfig`.
 
-Furthermore, we need to patch the boot command executed by U-Boot, since we do
-not need to use a ramdisk. To do so, apply the following patch.
-
-```
---- a/include/configs/zynq-common.h
-+++ b/include/configs/zynq-common.h
-@@ -284,8 +284,7 @@
-                        "echo Copying Linux from SD to RAM... && " \
-                        "load mmc 0 ${kernel_load_address} ${kernel_image} && " \
-                        "load mmc 0 ${devicetree_load_address} ${devicetree_image} && " \
--                       "load mmc 0 ${ramdisk_load_address} ${ramdisk_image} && " \
--                       "bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}; " \
-+                       "bootm ${kernel_load_address} - ${devicetree_load_address}; " \
-                "fi\0" \
-        "usbboot=run xilinxcmd && if usb start; then " \
-                        "run uenvboot; " \
-```
-
-We should also change the default boot order in this file.
-```
---- a/include/configs/zynq-common.h
-+++ b/include/configs/zynq-common.h
-@@ -206,14 +206,14 @@
-        "nor "
-
- #define BOOT_TARGET_DEVICES(func) \
-+       func(XILINX, xilinx, na) \
-        BOOT_TARGET_DEVICES_MMC(func) \
-        BOOT_TARGET_DEVICES_QSPI(func) \
-        BOOT_TARGET_DEVICES_NAND(func) \
-        BOOT_TARGET_DEVICES_NOR(func) \
-        BOOT_TARGET_DEVICES_USB(func) \
-        BOOT_TARGET_DEVICES_PXE(func) \
--       BOOT_TARGET_DEVICES_DHCP(func) \
--       func(XILINX, xilinx, na)
-+       BOOT_TARGET_DEVICES_DHCP(func)
-
- #include <config_distro_bootcmd.h>
- #endif /* CONFIG_SPL_BUILD */
-```
+While older versions of U-Boot required a patch to adjust the boot commands to our needs, we will use the default Distro Boot feature and supply these commands with an additional `boot.scr` file on our SD card later on.
 
 Finally, to configure and build U-Boot, execute the following commands.
 
 ```
 > cd $WD/u-boot-xlnx
 > make zynq_zed_defconfig
-> make menuconfig #disable Falcom Mode here
+> make menuconfig #Disable Falcon Mode here
 > make -j3
 ```
 
@@ -427,10 +388,29 @@ Unfortunately, the FPGA manager included in newer Linux kernel versions does not
 > xxd -e $WD/reconos/demos/sort_demo/build.hw/myReconOS.runs/impl_1/design_1_wrapper.bin | xxd -r > $WD/nfs/lib/firmware/bitstream_sortdemo.bin
 ```
 
+To set up U-Boot, you need to prepare the `boot.scr` file that supplies the necessary boot commands. First, create a file `boot.cmd` with the following content:
+
+```
+setenv kernel_image uImage
+setenv kernel_load_address 0x2080000
+setenv devicetree_image devicetree.dtb
+setenv devicetree_load_address 0x2000000
+
+load mmc 0 ${kernel_load_address} ${kernel_image}
+load mmc 0 ${devicetree_load_address} ${devicetree_image}
+bootm ${kernel_load_address} - ${devicetree_load_address}
+```
+
+Afterwards use the mkimage tool to build the `boot.scr` file:
+```
+mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n "Distro Boot Script" -d boot.cmd boot.scr
+```
+
 Then setup the SD card shipped with the board. The only thing you have to
 do, is to cleanup the card and copy the right files to it.
 
 ```
+> cp $WD/boot.scr /mnt/boot.scr
 > cp $WD/u-boot-xlnx/spl/boot.bin /mnt/boot.bin
 > cp $WD/u-boot-xlnx/u-boot.img /mnt/u-boot.img
 > cp $WD/linux-xlnx/arch/arm/boot/uImage /mnt/uImage
@@ -449,7 +429,7 @@ Zynq> boot
 After Linux has booted, you can run the SortDemo.
 ```
 / # cd /opt/reconos
-/opt/reconos # echo bitstream_sortdemo.bit > /sys/class/fpga_manager/fpga0/firmware
+/opt/reconos # echo bitstream_sortdemo.bin > /sys/class/fpga_manager/fpga0/firmware
 /opt/reconos # ./reconos_init.sh
 /opt/reconos # ./sortdemo
 /opt/reconos # ./sortdemo 2 1 32
@@ -460,7 +440,7 @@ After Linux has booted, you can run the SortDemo.
 Although convenient during development, having the root filesystem mounted from NFS
 is not always the best option. The Zedboard needs to be connected with a host PC at
 all times in order to work. A different approach is to package the root filesystem
-in a ramdisk image and mount that image from SD card. This section describes, how to
+in a ramdisk image and mount that image from SD card. This section describes how to
 create and edit this image and how to setup U-Boot in order to start Linux with this approach.
 
 First create an empty image file and mount it. You might want to increase the size (`count`) depending on your use case.
@@ -485,7 +465,20 @@ gzip $WD/ramdisk/ramdisk.image
 mkimage -A arm -T ramdisk -C gzip -d $WD/ramdisk/ramdisk.image.gz $WD/ramdisk/uramdisk.image.gz
 ```
 
-Revert the 1st patch for zynq-common.h and compile U-Boot again.
+Adjust the boot commands as follows, and rebuild the `boot.scr` file as shown before.
+```
+setenv kernel_image uImage
+setenv kernel_load_address 0x2080000
+setenv devicetree_image devicetree.dtb
+setenv devicetree_load_address 0x2000000
+setenv ramdisk_image uramdisk.image.gz
+setenv ramdisk_load_address 0x4000000
+
+load mmc 0 ${kernel_load_address} ${kernel_image}
+load mmc 0 ${devicetree_load_address} ${devicetree_image}
+load mmc 0 ${ramdisk_load_address} ${ramdisk_image}
+bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}
+```
 
 You also need to adjust the bootargs setting in the devicetree (zynq-zed.dts) and recompile it.
 ```

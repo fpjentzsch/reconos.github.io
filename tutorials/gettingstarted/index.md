@@ -56,7 +56,7 @@ of 115200, for example using picocom:
 > picocom -b 115200 /dev/ttyACM0 
 ```
 
-A u-boot prompt will appear. From here start the kernel boot process.
+U-Boot should initiate the boot process automatically. If interrupted, you can start it manually:
 
 ```
 Zynq > boot
